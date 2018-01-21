@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>私が最初に言い出したことになんねーかな</title>
+</head>
+
+<body>
+
+    <h1>JavaScriptで埋め込みツイートを表示するデモ</h1>
+    <p>JavaScriptを利用して、指定した場所に埋め込みツイートを表示するデモです。
+
+        <!-- コンテナ -->
+        <div id="tweet-container"></div>
+        <script type="text/javascript" async src="https://platform.twitter.com/widgets.js"></script>
+        <script>
+
+            window.onload = function () {
+                // コンテナを取得
+                var container = document.getElementById("tweet-container");
+
+                // ツイートを埋め込み表示するメソッドを実行
+
+                twttr.widgets.createTweet(
+                    "954732490903597056",	// ツイートID
+                    container,	// コンテナの要素
+                    {	// パラメータ
+                        //		cards: "hidden" ,
+                        //		conversation: "none" ,
+                        theme: "dark",
+                        //		link-color: "#D36015" ,
+                        width: 300,
+                        align: "center",
+                        //		lang: "ja" ,
+                        //		dnt: true ,
+                    }
+                );
+            };
+
+        </script>
+</body>
+
+</html>
