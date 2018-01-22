@@ -7,37 +7,61 @@
 
 <body>
 
-    <h1>JavaScriptで埋め込みツイートを表示するデモ</h1>
-    <p>JavaScriptを利用して、指定した場所に埋め込みツイートを表示するデモです。
+    <h1>私が最初に言い出したことになんねーかな</h1>
+    <p>日付を指定して検索すると、その日の最初に「今日も１日がんばるぞい！」とつぶやかれたツイートを取得します。</p>
+    <input type="date" id="param-date">
+    <input type="button" id="btn-search" value="検索">
 
-        <!-- コンテナ -->
-        <div id="tweet-container"></div>
-        <script type="text/javascript" async src="https://platform.twitter.com/widgets.js"></script>
-        <script>
+    <!-- コンテナ -->
+    <div id="tweet-container"></div>
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+        crossorigin="anonymous"></script>
+    <script type="text/javascript" async src="https://platform.twitter.com/widgets.js"></script>
+    <script>
 
-            window.onload = function () {
-                // コンテナを取得
-                var container = document.getElementById("tweet-container");
+        $(function () {
 
-                // ツイートを埋め込み表示するメソッドを実行
+            $('#btn-search').on('click', function () {
+                $("#tweet-container").empty();
 
-                twttr.widgets.createTweet(
-                    "954732490903597056",	// ツイートID
-                    container,	// コンテナの要素
-                    {	// パラメータ
-                        //		cards: "hidden" ,
-                        //		conversation: "none" ,
-                        theme: "dark",
-                        //		link-color: "#D36015" ,
-                        width: 300,
-                        align: "center",
-                        //		lang: "ja" ,
-                        //		dnt: true ,
+                //ツイート取得
+                $.ajax({
+                    url: 'https://first-ganbaruzoi.herokuapp.com/getganbaruzoi',
+                    type: 'GET',
+                    data: {
+                        'date': $('#param-date').val()
                     }
-                );
-            };
+                })
+                    .done(function (data) {
+                        console.log(data);
 
-        </script>
+                        if (data.length > 0) {
+                            var container = $("#tweet-container")[0];
+
+                            // ツイートを埋め込み表示するメソッドを実行
+                            twttr.widgets.createTweet(
+                                data,	// ツイートID
+                                container,	// コンテナの要素
+                                {	// パラメータ
+                                    //		cards: "hidden" ,
+                                    //		conversation: "none" ,
+                                    theme: "dark",
+                                    //		link-color: "#D36015" ,
+                                    width: 300,
+                                    align: "center",
+                                    //		lang: "ja" ,
+                                    //		dnt: true ,
+                                }
+                            );
+                        }
+                    })
+                    .fail(function () {
+                        console.log('error');
+                    });
+            });
+        });
+
+    </script>
 </body>
 
 </html>
