@@ -1,19 +1,35 @@
 <!DOCTYPE html>
-<html>
+<html lang="ja">
 
 <head>
+    <meta charset="utf-8">
     <title>私が最初に言い出したことになんねーかな</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="今日も一日がんばるぞい！と最速でツイートした人を検索">
+    <meta name="author" content="DE-TEIU">
+
+    <link href="./main.css" rel="stylesheet">
 </head>
 
 <body>
 
-    <h1>私が最初に言い出したことになんねーかな</h1>
-    <p>日付を指定して検索すると、その日に誰よりも早く「今日も１日がんばるぞい！」とつぶやいた人のツイートを表示します。</p>
-    <input type="date" id="param-date">
-    <input type="button" id="btn-search" value="検索">
+
 
     <!-- コンテナ -->
-    <div id="tweet-container"></div>
+    <div id="container">
+        <h1>私が最初に言い出したことになんねーかな</h1>
+        <p>日付を指定して検索すると、その日に誰よりも早く「今日も１日がんばるぞい！」とツイートした人を表示します。</p>
+        <p style="font-size: 75%;">※Twitter APIの仕様上、直近の７日分ぐらいしか検索対象にならないらしい。残念。</p>
+        <input type="date" id="param-date">
+        <input type="button" id="btn-search" value="検索">
+
+        <div id="tweet-container"></div>
+        <div id="loading">
+            <img src="./image/gif-load.gif">
+        </div>
+        <span id="message"></span>
+    </div>
+
     <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
         crossorigin="anonymous"></script>
     <script type="text/javascript" async src="https://platform.twitter.com/widgets.js"></script>
@@ -22,6 +38,13 @@
         $(function () {
 
             $('#btn-search').on('click', function () {
+                if ($('#param-date').val() == '') {
+                    $("#message").text("日付を指定してください。");
+                    return;
+                }
+
+                $("#message").empty();
+                $("#loading").show();
                 $("#tweet-container").empty();
 
                 //ツイート取得
@@ -53,10 +76,15 @@
                                     //		dnt: true ,
                                 }
                             );
+                        } else {
+                            $("#message").text("見つかりませんでした。");
                         }
                     })
                     .fail(function () {
-                        console.log('error');
+                        $("#message").text("取得できませんでした。");
+                    })
+                    .always(function () {
+                        $("#loading").hide();
                     });
             });
         });
